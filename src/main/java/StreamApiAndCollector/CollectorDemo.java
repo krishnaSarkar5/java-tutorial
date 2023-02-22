@@ -3,6 +3,7 @@ package StreamApiAndCollector;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
 
 public class CollectorDemo {
@@ -220,8 +221,7 @@ public class CollectorDemo {
         Map<String, Optional<Employee>> departmentWiseHighestSalary = employeeList.stream()
                                                                                   .collect(
                                                                                             Collectors.groupingBy(
-                                                                                                                   e -> e.getDepartment().getDepartmentName(),
-                                                                                                                   Collectors.minBy((emp1, emp2) -> emp1.getSalary() -emp2.getSalary())));
+                                                                                                                   e -> e.getDepartment().getDepartmentName()  ,   Collectors.maxBy((emp1, emp2) -> emp1.getSalary() -emp2.getSalary())));
 
 
         System.out.println("departmentWiseHighestSalary:  "+departmentWiseHighestSalary);
@@ -229,7 +229,7 @@ public class CollectorDemo {
 
         Map<String, Employee> secondHighestSalary = employeeList.stream().collect(
                                                                     Collectors.groupingBy(
-                                                                                            e -> e.getDepartment().getDepartmentName(),
+                                                                                            e -> e.getDepartment().getDepartmentName() ,
                                                                                                                                         Collectors.collectingAndThen(Collectors.toList(),
                                                                                                                                                                                         list -> list.stream()
                                                                                                                                                                                                 .sorted((emp1, emp2) -> emp1.getSalary() - emp2.getSalary())  // increasing sorting order
@@ -426,6 +426,47 @@ public class CollectorDemo {
 
 
         System.out.println("evenNumberListWithSorting: "+evenNumberListWithSorting);
+
+
+
+
+
+
+////////////////////////////////////////////
+//                                        //
+//              reduce                    //
+//                                        //
+////////////////////////////////////////////
+
+
+
+
+//        public static <T> Collector<T, ?, Optional<T>> reducing (BinaryOperator<T> op)
+//        Returns a Collector which performs a reduction of its input elements under a specified BinaryOperator. The result is described as an Optional<T>.
+//
+//        Parameters:
+//<T>	   	element type for the input and output of the reduction
+//        op	   	a BinaryOperator<T> used to reduce the input elements
+//        Returns:  a Collector which implements the reduction operation
+//
+//        See also:
+//        reducing(Object, BinaryOperator), reducing(Object, Function, BinaryOperator)
+//
+//        @apiNote The reducing() collectors are most useful when used in a multi-level reduction, downstream of groupingBy or partitioningBy. To perform a simple reduction on a stream, use Stream.reduce(BinaryOperator) instead.
+//
+//                For example, given a stream of Person, to calculate tallest person in each city:
+//
+//
+//        Comparator<Person> byHeight = Comparator.comparing(Person::getHeight);
+//        Map<City, Person> tallestByCity
+//                = people.stream().collect(groupingBy(Person::getCity, reducing(BinaryOperator.maxBy(byHeight))));
+
+
+        Map<String, Optional<Employee>> departmentWiseMaxSalariedEmployee = employeeList.stream()
+                                                                                        .collect(
+                                                                                                    Collectors.groupingBy(    e -> e.getDepartment().getDepartmentName()   , Collectors.reducing(BinaryOperator.maxBy((emp1, emp2) -> emp1.getSalary() - emp2.getSalary()))));
+
+        System.out.println( departmentWiseMaxSalariedEmployee);
 
     }
 
