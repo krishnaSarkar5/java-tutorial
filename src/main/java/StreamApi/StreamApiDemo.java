@@ -80,5 +80,32 @@ public class StreamApiDemo {
         System.out.println(allMatchResult2);
 
 
+
+
+
+
+
+
+
+//        public abstract boolean anyMatch (Predicate<? super T> predicate)
+//        Returns whether any elements of this stream match the provided predicate. May not evaluate the predicate on all elements if not necessary for determining the result. If the stream is empty then false is returned and the predicate is not evaluated.
+//
+//        This is a short-circuiting terminal operation.
+//
+//        Parameters:
+//        predicate	   	a non-interfering, stateless predicate to apply to elements of this stream
+//        Returns:  true if any elements of the stream match the provided predicate, otherwise false
+//
+//        @apiNote This method evaluates the existential quantification of the predicate over the elements of the stream (for some x P(x)).
+
+
+        boolean anyMatchResult1 = numberList.stream().anyMatch(e -> e < 10);
+
+        System.out.println("anyMatchResult1 :"+anyMatchResult1);
+
+        boolean anyMatchResult2 = employeeMap.entrySet().stream().anyMatch(e -> e.getKey().getSalary() == 100);
+
+        System.out.println("anyMatchResult2 :"+anyMatchResult2);
+
     }
 }
