@@ -70,9 +70,14 @@ public class StreamApiDemo {
 //        @apiNote This method evaluates the universal quantification of the predicate over the elements of the stream (for all x P(x)). If the stream is empty, the quantification is said to be vacuously satisfied and is always true (regardless of P(x)).
 
 
-        boolean allMatchResult = numberList.stream().allMatch(n -> n >= 9);  // here all the elements in the list n>=9 satisfy so it gives true. but if we give n>=10 then it will give false
+        boolean allMatchResult1 = numberList.stream().allMatch(n -> n >= 9);  // here all the elements in the list n>=9 satisfy so it gives true. but if we give n>=10 then it will give false
 
-        System.out.println(allMatchResult);
+        System.out.println(allMatchResult1);
+
+//        check weather all the employees has salary >= 100
+        boolean allMatchResult2 = employeeMap.entrySet().stream().allMatch(e -> e.getKey().getSalary() >= 100);
+
+        System.out.println(allMatchResult2);
 
 
     }
