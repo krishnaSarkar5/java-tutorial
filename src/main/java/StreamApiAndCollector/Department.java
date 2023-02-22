@@ -1,4 +1,4 @@
-package StreamApi;
+package StreamApiAndCollector;
 
 public class Department {
 
