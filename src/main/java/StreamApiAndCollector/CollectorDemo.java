@@ -468,6 +468,57 @@ public class CollectorDemo {
 
         System.out.println( departmentWiseMaxSalariedEmployee);
 
+
+
+
+
+
+////////////////////////////////////////////
+//                                        //
+//              summarizingDouble         //
+//                                        //
+////////////////////////////////////////////
+
+
+
+//        public static <T> Collector<T, ?, DoubleSummaryStatistics> summarizingDouble (ToDoubleFunction<? super T> mapper)
+//        Returns a Collector which applies an double-producing mapping function to each input element, and returns summary statistics for the resulting values.
+//
+//                Parameters:
+//<T>	   	the type of the input elements
+//        mapper	   	a mapping function to apply to each element
+//        Returns:  a Collector implementing the summary-statistics reduction
+//
+//        See also:
+//        summarizingLong(ToLongFunction), summarizingInt(ToIntFunction)
+//        it gives output consisting max,min,sum,average etc
+
+        IntSummaryStatistics intSummaryStatistics = numberList.stream().collect(Collectors.summarizingInt(e -> e));
+
+        System.out.println("intSummaryStatistics: "+intSummaryStatistics);
+
+
+
+////////////////////////////////////////////
+//                                        //
+//              summingInt                //
+//                                        //
+////////////////////////////////////////////
+
+
+//        public static <T> Collector<T, ?, Integer> summingInt (ToIntFunction<? super T> mapper)
+//        Returns a Collector that produces the sum of a integer-valued function applied to the input elements. If no elements are present, the result is 0.
+//
+//        Parameters:
+//<T>	   	the type of the input elements
+//        mapper	   	a function extracting the property to be summed
+//        Returns:  a Collector that produces the sum of a derived property
+
+
+        Integer sum = numberList.stream().collect(Collectors.summingInt(e -> e));
+
+        System.out.println("sum : "+sum);
+
     }
 
 
