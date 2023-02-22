@@ -263,9 +263,169 @@ public class CollectorDemo {
 
 //        give all the employees name by comma separated
 
-        String allEmployeesName = employeeList.stream().map(e -> e.getName()).collect(Collectors.joining(" || "));
+        String allEmployeesName = employeeList.stream().map(e -> e.getName()).collect(Collectors.joining(" || ","<",">"));
 
         System.out.println("allEmployeesName:  "+allEmployeesName);
+
+
+
+
+////////////////////////////////////////////
+//                                        //
+//              mapping                   //
+//                                        //
+////////////////////////////////////////////
+
+
+
+
+
+
+//        public static <T, U, A, R> Collector<T, ?, R> mapping (Function<? super T, ? extends U> mapper, Collector<? super U, A, R> downstream)
+//        Adapts a Collector accepting elements of type U to one accepting elements of type T by applying a mapping function to each input element before accumulation.
+//
+//        Parameters:
+//<T>	   	the type of the input elements
+//                <U>	   	type of elements accepted by downstream collector
+//                <A>	   	intermediate accumulation type of the downstream collector
+//                <R>	   	result type of collector
+//        mapper	   	a function to be applied to the input elements
+//        downstream	   	a collector which will accept mapped values
+//        Returns:  a collector which applies the mapping function to the input elements and provides the mapped results to the downstream collector
+//
+//        @apiNote The mapping() collectors are most useful when used in a multi-level reduction, such as downstream of a groupingBy or partitioningBy. For example, given a stream of Person, to accumulate the set of last names in each city:
+//
+//
+//        Map<City, Set<String>> lastNamesByCity
+//                = people.stream().collect(groupingBy(Person::getCity,
+//                mapping(Person::getLastName, toSet())));
+
+
+
+
+
+
+//      print the employee names group by alphabaticaly
+
+        Map<Character, List<String>> alphabaticallyEmployeeNames = employeeList.stream()
+                                                                               .collect(
+                                                                                         Collectors.groupingBy(
+                                                                                                                e -> e.getName().charAt(0), Collectors.mapping(
+                                                                                                                                                                 e -> e.getName(), Collectors.toList())));
+
+        System.out.println("alphabaticallyEmployeeNames:  "+alphabaticallyEmployeeNames);
+
+
+
+
+
+
+
+
+////////////////////////////////////////////
+//                                        //
+//              maxBy                     //
+//                                        //
+////////////////////////////////////////////
+
+
+
+//        public static <T> Collector<T, ?, Optional<T>> maxBy (Comparator<? super T> comparator)
+//        Returns a Collector that produces the maximal element according to a given Comparator, described as an Optional<T>.
+//
+//        Parameters:
+//<T>	   	the type of the input elements
+//        comparator	   	a Comparator for comparing elements
+//        Returns:  a Collector that produces the maximal value
+//
+//        @implSpec This produces a result equivalent to:
+//
+//
+//        reducing(BinaryOperator.maxBy(comparator))
+
+
+        Optional<Integer> maxNumberOptional = numberList.stream().collect(Collectors.maxBy((num1, num2) -> num1 - num2));
+
+        System.out.println("max Number: "+maxNumberOptional.get());
+
+
+
+
+
+
+
+
+////////////////////////////////////////////
+//                                        //
+//              minBy                     //
+//                                        //
+////////////////////////////////////////////
+
+
+
+
+//        public static <T> Collector<T, ?, Optional<T>> minBy (Comparator<? super T> comparator)
+//        Returns a Collector that produces the minimal element according to a given Comparator, described as an Optional<T>.
+//
+//        Parameters:
+//<T>	   	the type of the input elements
+//        comparator	   	a Comparator for comparing elements
+//        Returns:  a Collector that produces the minimal value
+//
+//        @implSpec This produces a result equivalent to:
+//
+//
+//        reducing(BinaryOperator.minBy(comparator))
+
+
+        Optional<Integer> minNumberOptional = numberList.stream().collect(Collectors.minBy((num1, num2) -> num1 - num2));
+
+        System.out.println("minNumberOptional: "+minNumberOptional.get());
+
+
+
+
+
+////////////////////////////////////////////
+//                                        //
+//              partitionBy               //
+//                                        //
+////////////////////////////////////////////
+
+
+
+
+
+//        public static <T> Collector<T, ?, Map<Boolean, List<T>>> partitioningBy (Predicate<? super T> predicate)
+//        Returns a Collector which partitions the input elements according to a Predicate, and organizes them into a Map<Boolean, List<T>>. There are no guarantees on the type, mutability, serializability, or thread-safety of the Map returned.
+//
+//        Parameters:
+//<T>	   	the type of the input elements
+//        predicate	   	a predicate used for classifying input elements
+//        Returns:  a Collector implementing the partitioning operation
+//
+//        See also:
+//        partitioningBy(Predicate, Collector)
+
+
+
+//        partition the numbers based on even odd and sort each groups
+
+
+        Map<Boolean, List<Integer>> evenNumberList = numberList.stream().collect(Collectors.partitioningBy(e -> e % 2 == 0));
+
+        System.out.println("evenNumberList: "+evenNumberList);
+//        partition the numbers based on even odd and sort each groups
+
+        Map<Boolean, List<Integer>> evenNumberListWithSorting = numberList.stream()
+                                                                           .collect(
+                                                                                     Collectors.partitioningBy(e -> e % 2 == 0  ,  Collectors.collectingAndThen(
+                                                                                                                                                                 Collectors.toList()  ,  list->list.stream()
+                                                                                                                                                                                                   .sorted((num1,num2)->num2-num1)
+                                                                                                                                                                                                   .collect(Collectors.toList()))));
+
+
+        System.out.println("evenNumberListWithSorting: "+evenNumberListWithSorting);
 
     }
 
