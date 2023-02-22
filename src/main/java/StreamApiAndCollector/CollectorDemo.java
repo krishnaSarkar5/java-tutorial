@@ -232,12 +232,41 @@ public class CollectorDemo {
                                                                                             e -> e.getDepartment().getDepartmentName(),
                                                                                                                                         Collectors.collectingAndThen(Collectors.toList(),
                                                                                                                                                                                         list -> list.stream()
-                                                                                                                                                                                                .sorted((emp1, emp2) -> emp1.getSalary() - emp2.getSalary())
-                                                                                                                                                                                                .skip(Math.max(0, list.size() - 2))
+                                                                                                                                                                                                .sorted((emp1, emp2) -> emp1.getSalary() - emp2.getSalary())  // increasing sorting order
+                                                                                                                                                                                                .skip(Math.max(0, list.size() - 2))  // for 3rd highest salary it should be 3
                                                                                                                                                                            .findFirst().get())));
 
 
         System.out.println("departmentWiseSecondHighestSalary:  "+secondHighestSalary);
+
+
+
+////////////////////////////////////////////
+//                                        //
+//              Joining                   //
+//                                        //
+////////////////////////////////////////////
+
+
+
+
+
+//        public static Collector<CharSequence, ?, String> joining ()
+//        Returns a Collector that concatenates the input elements into a String, in encounter order.
+//
+//        Returns:  a Collector that concatenates the input elements into a String, in encounter order
+
+
+        String allNumbersStringByJoining = numberList.stream().map(e -> e.toString()).collect(Collectors.joining(","));
+
+        System.out.println("allNumbersStringByJoining: "+allNumbersStringByJoining);
+
+//        give all the employees name by comma separated
+
+        String allEmployeesName = employeeList.stream().map(e -> e.getName()).collect(Collectors.joining(" || "));
+
+        System.out.println("allEmployeesName:  "+allEmployeesName);
+
     }
 
 
