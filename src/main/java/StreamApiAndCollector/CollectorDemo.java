@@ -2,10 +2,7 @@ package StreamApiAndCollector;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class CollectorDemo {
@@ -20,9 +17,11 @@ public class CollectorDemo {
         Employee e2 =  new Employee(2l,"Suresh Saha", LocalDate.parse("25-11-2022", DateTimeFormatter.ofPattern("dd-MM-yyyy")),150,new Department(3l,"Java"));
         Employee e3 =  new Employee(3l,"Manish Das", LocalDate.parse("22-02-2023", DateTimeFormatter.ofPattern("dd-MM-yyyy")),120,new Department(2l,"React"));
         Employee e4 =  new Employee(4l,"Anil Chandra", LocalDate.parse("12-06-2022", DateTimeFormatter.ofPattern("dd-MM-yyyy")),170,new Department(1l,"QA"));
-        Employee e5 =  new Employee(5l,"Akhil Kumar", LocalDate.parse("02-10-2022", DateTimeFormatter.ofPattern("dd-MM-yyyy")),170,new Department(3l,"Java"));
-        Employee e6 =  new Employee(6l,"Bijay Dutta", LocalDate.parse("11-02-2023", DateTimeFormatter.ofPattern("dd-MM-yyyy")),170,new Department(2l,"React"));
-
+        Employee e5 =  new Employee(5l,"Akhil Kumar", LocalDate.parse("02-10-2022", DateTimeFormatter.ofPattern("dd-MM-yyyy")),190,new Department(3l,"Java"));
+        Employee e6 =  new Employee(6l,"Bijay Dutta", LocalDate.parse("11-02-2023", DateTimeFormatter.ofPattern("dd-MM-yyyy")),210,new Department(2l,"React"));
+        Employee e7 =  new Employee(7l,"Ajay Biswas", LocalDate.parse("11-01-2022", DateTimeFormatter.ofPattern("dd-MM-yyyy")),185,new Department(1l,"QA"));
+        Employee e8 =  new Employee(8l,"Mrinmoy Gupta", LocalDate.parse("21-11-2022", DateTimeFormatter.ofPattern("dd-MM-yyyy")),250,new Department(3l,"Java"));
+        Employee e9 =  new Employee(9l,"Arjun Bepari", LocalDate.parse("15-01-2023", DateTimeFormatter.ofPattern("dd-MM-yyyy")),290,new Department(2l,"React"));
 
         List<Employee> employeeList = new ArrayList<>();
 
@@ -32,6 +31,9 @@ public class CollectorDemo {
         employeeList.add(e4);
         employeeList.add(e5);
         employeeList.add(e6);
+        employeeList.add(e7);
+        employeeList.add(e8);
+        employeeList.add(e9);
 
 
         Map<Employee,Integer> employeeMap = new HashMap<>();
@@ -54,7 +56,11 @@ public class CollectorDemo {
         numberList.add(45);
         numberList.add(19);
 
-
+////////////////////////////////////////////
+//                                        //
+//              average                   //
+//                                        //
+////////////////////////////////////////////
 
 
 
@@ -71,9 +77,178 @@ public class CollectorDemo {
 //
 //        @implNote The double format can represent all consecutive integers in the range -253 to 253. If the pipeline has more than 253 values, the divisor in the average computation will saturate at 253, leading to additional numerical errors.
                                                                         //same as :  e->e
-        Double average = numberList.stream().collect(Collectors.averagingDouble(Integer::intValue));
+        Double averageDouble = numberList.stream().collect(Collectors.averagingDouble(Integer::intValue));
 
-        System.out.println("averaging : "+average);
+        System.out.println("averageDouble : "+averageDouble);
 
+
+//        public static <T> Collector<T, ?, Double> averagingInt (ToIntFunction<? super T> mapper)
+//        Returns a Collector that produces the arithmetic mean of an integer-valued function applied to the input elements. If no elements are present, the result is 0.
+//
+//        Parameters:
+//<T>	   	the type of the input elements
+//        mapper	   	a function extracting th
+//        e property to be summed
+//        Returns:  a Collector that produces the sum of a derived property
+
+        Double averageInt =  numberList.stream().collect(Collectors.averagingInt(e->e));
+
+        System.out.println("averageInt : "+averageInt);
+
+
+        Double averageLong = numberList.stream().collect(Collectors.averagingLong(Integer::intValue));
+
+        System.out.println("averageLong : "+averageLong);
+
+
+////////////////////////////////////////////
+//                                        //
+//              CollectingAndThen         //
+//                                        //
+////////////////////////////////////////////
+
+
+
+
+//        public static <T, A, R, RR> Collector<T, A, RR> collectingAndThen (Collector<T, A, R> downstream, Function<R, RR> finisher)
+//        Adapts a Collector to perform an additional finishing transformation. For example, one could adapt the toList() collector to always produce an immutable list with:
+//
+//
+//        List<String> people
+//                = people.stream().collect(collectingAndThen(toList(), Collections::unmodifiableList));
+//
+//        Parameters:
+//<T>	   	the type of the input elements
+//                <A>	   	intermediate accumulation type of the downstream collector
+//                <R>	   	result type of the downstream collector
+//<RR>	   	result type of the resulting collector
+//        downstream	   	a collector
+//        finisher	   	a function to be applied to the final result of the downstream collector
+//        Returns:  a collector which performs the action of the downstream collector, followed by an additional finishing step
+
+
+//        it basically first collect to a collection and then do any operation on it
+
+//        find the percentage of share for total salary of the employees whose salary >= 150, total cost of company = 5000
+
+        Double percentageShare = employeeList.stream().filter(e -> e.getSalary() >= 150)
+                                                        .collect(
+                                                                Collectors.collectingAndThen(
+                                                                        Collectors.summingInt(e -> e.getSalary()),
+                                                                        totalSalay -> ( totalSalay.doubleValue()* 100) / 5000
+                                                                ));
+        System.out.println("percentageShare:  "+percentageShare);
+
+
+
+
+////////////////////////////////////////////
+//                                        //
+//              Counting                  //
+//                                        //
+////////////////////////////////////////////
+
+
+        //    public static <T> Collector<T, ?, Long> counting ()
+//    Returns a Collector accepting elements of type T that counts the number of input elements. If no elements are present, the result is 0.
+//
+//    Parameters:
+//    <T>	   	the type of the input elements
+//    Returns:  a Collector that counts the input elements
+//
+//    @implSpec This produces a result equivalent to:
+//
+//
+//    reducing(0L, e -> 1L, Long::sum)
+
+
+//    no of employees whose joins in 2023
+
+
+        Long noOfEmployeesJoinedIn2023 = employeeList.stream().filter(e -> e.getJoiningDate().getYear() == 2023).collect(Collectors.counting());
+
+        System.out.println("noOfEmployeesJoinedIn2023:  "+noOfEmployeesJoinedIn2023);
+
+
+
+
+
+
+////////////////////////////////////////////
+//                                        //
+//              Grouping By               //
+//                                        //
+////////////////////////////////////////////
+
+
+//        public static <T, K> Collector<T, ?, Map<K, List<T>>> groupingBy (Function<? super T, ? extends K> classifier)
+//        Returns a Collector implementing a "group by" operation on input elements of type T, grouping elements according to a classification function, and returning the results in a Map.
+//
+//        The classification function maps elements to some key type K. The collector produces a Map<K, List<T>> whose keys are the values resulting from applying the classification function to the input elements, and whose corresponding values are Lists containing the input elements which map to the associated key under the classification function.
+//
+//                There are no guarantees on the type, mutability, serializability, or thread-safety of the Map or List objects returned.
+//
+//                Parameters:
+//<T>	   	the type of the input elements
+//                <K>	   	the type of the keys
+//        classifier	   	the classifier function mapping input elements to keys
+//        Returns:  a Collector implementing the group-by operation
+//
+//        See also:
+//        groupingBy(Function, Collector), groupingBy(Function, Supplier, Collector), groupingByConcurrent(Function)
+//
+//        @implSpec This produces a result similar to:
+//
+//
+//        groupingBy(classifier, toList());
+//
+//
+//        @implNote The returned Collector is not concurrent. For parallel stream pipelines, the combiner function operates by merging the keys from one map into another, which can be an expensive operation. If preservation of the order in which elements appear in the resulting Map collector is not required, using groupingByConcurrent(Function) may offer better parallel performance.
+
+
+
+
+//   find all employees groupBy department id
+
+
+        Map<Long, List<Employee>> groupingResult = employeeList.stream().collect(Collectors.groupingBy(e -> e.getDepartment().getId()));
+
+        System.out.println("groupingResult:  "+groupingResult);
+
+//   find department wise highest salary
+
+        Map<String, Optional<Employee>> departmentWiseHighestSalary = employeeList.stream()
+                                                                                  .collect(
+                                                                                            Collectors.groupingBy(
+                                                                                                                   e -> e.getDepartment().getDepartmentName(),
+                                                                                                                   Collectors.minBy((emp1, emp2) -> emp1.getSalary() -emp2.getSalary())));
+
+
+        System.out.println("departmentWiseHighestSalary:  "+departmentWiseHighestSalary);
+
+
+        Map<String, Employee> secondHighestSalary = employeeList.stream().collect(
+                                                                    Collectors.groupingBy(
+                                                                                            e -> e.getDepartment().getDepartmentName(),
+                                                                                                                                        Collectors.collectingAndThen(Collectors.toList(),
+                                                                                                                                                                                        list -> list.stream()
+                                                                                                                                                                                                .sorted((emp1, emp2) -> emp1.getSalary() - emp2.getSalary())
+                                                                                                                                                                                                .skip(Math.max(0, list.size() - 2))
+                                                                                                                                                                           .findFirst().get())));
+
+
+        System.out.println("departmentWiseSecondHighestSalary:  "+secondHighestSalary);
     }
+
+
+
+
+
+
+
+
+
+
+
+
 }
