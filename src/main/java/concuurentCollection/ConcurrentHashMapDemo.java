@@ -19,8 +19,8 @@ public class ConcurrentHashMapDemo {
         chm.putIfAbsent(101,"D"); // as key 101 already present do it will bot be added in chm
         chm.remove(101,"D"); // successfully removed as given key and corresponding value is matched
         chm.replace(102,"B","E"); // successfully replaced as given key and corresponding old value is matched
-        chm.replace(103,"M"); //
-        System.out.println(chm); // this  replace  methods are from map interface so there are same like in map
+        chm.replace(103,"M"); // this  replace  methods are from map interface so there are same like in map
+        System.out.println(chm);
 
 
         //o/p =>  {101=A, 102=E, 103=M, 104=G, 108=D}
